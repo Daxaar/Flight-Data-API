@@ -5,7 +5,7 @@ var jsonfile = require('jsonfile');
 var fs = require("fs");
 var formurlencoded = require('form-urlencoded');
 
-var cacheEnabled = false;
+var cacheEnabled = true;
 
 var options = {
   uri: "https://www.birminghamairport.co.uk/Api/FidApi/GetFlights",
@@ -32,17 +32,7 @@ var options = {
 let filePath = process.cwd() + '\\cache\\data.json';
 
 router.get('/', function(req, res, next) {
-
-  fs.readFile(filePath,'utf8', (err,data) => {
-    if(!err && data.length > 0 && cacheEnabled) {
-      console.log("serving from disk");
-      data = JSON.parse(data);
-      data.source = "disk";
-      res.json(data);
-    } else {
-      getDataFromServer(res);
-    }
-  });
+  getData(data => res.json(data));
 });
 
 router.get('/arrivals',(req, res, next) => {
@@ -53,15 +43,37 @@ router.get('/departures',(req, res, next) => {
   res.render('index',{title: 'DEPARTURES'});
 });
 
-function getDataFromServer(res){
-  console.log("requesting from server");
+function getData(cb) {
+
+  readFromCache((data) => {
+    if(data){
+      cb(data);
+    } else {
+      getDataFromServer((data) => cb(data));
+    }
+  });
+}
+
+function readFromCache(cb){
+
+  fs.readFile(filePath,'utf8', (err,data) => {
+    if(!err && data.length > 0 && cacheEnabled) {
+      data = JSON.parse(data);
+      data.source = "disk";
+      cb(data);
+    }
+    cb(null);
+  });
+
+}
+function getDataFromServer(cb){
   request(options, function(error, response, body){
     if(!error){
       let data = JSON.parse(body);
       data.source = "server";
       if(data.success){
         jsonfile.writeFile(filePath,data);
-        res.json(data);
+        cb(data);
       }
     }
   });
