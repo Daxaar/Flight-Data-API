@@ -1,0 +1,1 @@
+Current behaviour is to always read the data.json file from this directory.  If it doesn't exist the data will be requested from the BHX website.  This prevents too many requests against the BHX server during development.  TODO: Add some cache timing to make this vaguely useful!
