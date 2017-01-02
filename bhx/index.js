@@ -1,11 +1,18 @@
 var request = require('request');
 var jsonfile = require('jsonfile');
 var fs = require('fs');
-var cacheEnabled = true;
+var cacheEnabled = false;
+
+var options = {
+  uri: 'https://www.birminghamairport.co.uk/Api/FidApi/GetFlights',
+  body: require('../bhx/request-body'),
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded','accept' : 'application/json'
+  }
+};
 
 var filePath = process.cwd() + '\\cache\\data.json';
-var arrivals = [];
-var departures = [];
 
 function readFromCache (cb){
 
