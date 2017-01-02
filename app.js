@@ -1,10 +1,14 @@
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
-var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+//morgan
+var logger = require('morgan');
+var fs = require('fs');
+
+//app routes
 var index = require('./routes/index');
 var users = require('./routes/users');
 var flights = require('./routes/flights');
@@ -15,9 +19,14 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// create a write stream (in append mode)
+var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
+// setup the logger
+//app.use(logger('short', {stream: accessLogStream}))
+app.use(logger(process.env.LOG_FORMAT || 'dev'));
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
