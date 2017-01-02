@@ -1,81 +1,32 @@
 var express = require('express');
 var router = express.Router();
-var request = require('request');
-var jsonfile = require('jsonfile');
-var fs = require('fs');
-var formurlencoded = require('form-urlencoded');
-
-var cacheEnabled = true;
+var bhx = require('../bhx');
 
 var options = {
   uri: 'https://www.birminghamairport.co.uk/Api/FidApi/GetFlights',
-  body: formurlencoded({
-    'Arrivals': {
-      flightType: 'Arrivals',
-      searchType: 'Destination',
-      query: '',
-      timespan: 'EightHours'
-    },
-    'Departures': {
-      flightType: 'Departures',
-      searchType: 'Destination',
-      query: '',
-      timespan: 'EightHours'
-    },
-  }),
+  body: require('../bhx/request-body'),
   method: 'POST',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded','accept' : 'application/json'
   }
 };
 
-let filePath = process.cwd() + '\\cache\\data.json';
-
 router.get('/', (req, res) => {
-  getData(data => res.json(data));
+  bhx.load(data => res.json(data));
 });
 
 router.get('/arrivals',(req, res) => {
-  res.render('index',{title: 'ARRIVALS'});
+  bhx.load((err, data) => {
+    delete data.departures;
+    res.json(data.arrivals);
+  });
 });
 
 router.get('/departures',(req, res) => {
-  res.render('index',{title: 'DEPARTURES'});
+  bhx.load((err, data) => {
+    delete data.arrivals;
+    res.json(data);
+  });
 });
 
-function getData(cb) {
-
-  readFromCache((data) => {
-    if(data){
-      cb(data);
-    } else {
-      getDataFromServer((data) => cb(data));
-    }
-  });
-}
-
-function readFromCache(cb){
-
-  fs.readFile(filePath,'utf8', (err,data) => {
-    if(!err && data.length > 0 && cacheEnabled) {
-      data = JSON.parse(data);
-      data.source = 'disk';
-      cb(data);
-    }
-    cb(null);
-  });
-
-}
-function getDataFromServer(cb){
-  request(options, function(error, response, body){
-    if(!error){
-      let data = JSON.parse(body);
-      data.source = 'server';
-      if(data.success){
-        jsonfile.writeFile(filePath,data);
-        cb(data);
-      }
-    }
-  });
-}
 module.exports = router;
