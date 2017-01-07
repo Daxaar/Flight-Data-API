@@ -1,7 +1,7 @@
 var request = require('request');
 var jsonfile = require('jsonfile');
 var fs = require('fs');
-var cacheEnabled = false;
+var cacheEnabled = true;
 var path = require('path');
 
 
@@ -32,6 +32,7 @@ function readFromCache (cb){
 function getDataFromServer(cb){
   request(options, function(error, response, body){
     if(!error){
+      //body = body.replace("/Date(","").replace(")/","");
       let data = JSON.parse(body);
       data.source = 'server';
       if(data.success){
