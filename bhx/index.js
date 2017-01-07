@@ -2,6 +2,8 @@ var request = require('request');
 var jsonfile = require('jsonfile');
 var fs = require('fs');
 var cacheEnabled = false;
+var path = require('path');
+
 
 var options = {
   uri: 'https://www.birminghamairport.co.uk/Api/FidApi/GetFlights',
@@ -12,7 +14,7 @@ var options = {
   }
 };
 
-var filePath = process.cwd() + '\\cache\\data.json';
+var filePath = path.join(process.cwd(),'cache', 'data.json');
 
 function readFromCache (cb){
 
