@@ -1,17 +1,14 @@
 const _ = require('lodash');
 
-module.exports = function(data) {
+module.exports = function(data, type) {
 
-    data.departures = 
-           _.chain(data.departures)
+    return _.chain(data)
             .map(formatDates)
             .map(removeUnwantedProperties)
             .groupBy(flight => flight.Airport + flight.ScheduledTimeText )
             .each(merge)
             .map(flightGroup => flightGroup[0])
             .value();
-    
-    return data;
 }
 
 function merge(flights){

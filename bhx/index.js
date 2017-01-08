@@ -1,9 +1,9 @@
 var request = require('request');
 var jsonfile = require('jsonfile');
 var fs = require('fs');
-var cacheEnabled = true;
 var path = require('path');
 
+var cacheEnabled = false;
 
 var options = {
   uri: 'https://www.birminghamairport.co.uk/Api/FidApi/GetFlights',

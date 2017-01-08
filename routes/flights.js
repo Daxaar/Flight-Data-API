@@ -11,7 +11,8 @@ router.get('/arrivals',(req, res) => {
   bhx.load((err, data) => {
     if(!err) {
       delete data.departures;
-      res.json(parse(data));
+      data.arrivals = parse(data.arrivals); 
+      res.json(data);
     }
   });
 });
@@ -20,7 +21,8 @@ router.get('/departures',(req, res) => {
   bhx.load((err, data) => {
     if(!err) {
       delete data.arrivals;
-      res.json(parse(data));
+      data.departures = parse(data.departures); 
+      res.json(data);
     }
   });
 });
