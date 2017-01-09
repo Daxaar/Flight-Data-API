@@ -1,6 +1,5 @@
 const _ = require('lodash');
 
-module.exports = function(data, type) {
 
     return _.chain(data)
             .map(formatDates)
