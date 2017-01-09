@@ -1,6 +1,7 @@
 const _ = require('lodash');
 
-
+module.exports = function (data) {
+    
     return _.chain(data)
             .map(formatDates)
             .map(removeUnwantedProperties)
