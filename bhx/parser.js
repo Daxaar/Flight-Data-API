@@ -1,10 +1,11 @@
 const _ = require('lodash');
 
-module.exports = function(data, type) {
-
+module.exports = function (data) {
+    
     return _.chain(data)
             .map(formatDates)
             .map(removeUnwantedProperties)
+            .map(funkyRename)
             .groupBy(flight => flight.Airport + flight.ScheduledTimeText )
             .each(merge)
             .map(flightGroup => flightGroup[0])
@@ -21,6 +22,12 @@ function merge(flights){
     return flight;
 }
 
+function funkyRename(flight){
+    if(flight.Airline === "Aer Lingus") {
+        flight.Airline = "Aer Fungus";
+    }
+    return flight;
+}
 function removeUnwantedProperties(flight){
     return _.omit(flight, ['CssClass','Comments']);
 }
