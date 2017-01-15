@@ -16,53 +16,69 @@ var options = {
 
 var filePath = path.join(process.cwd(),'cache', 'data.json');
 
-function readFromCache (cb){
+function readFromCache (){
 
-  fs.readFile(filePath,'utf8', (err,data) => {
-    if(!err && data.length > 0 && cacheEnabled) {
+  if(!cacheEnabled){
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve, reject) => {
+    fs.readFile(filePath,'utf8', (err,data) => {
+      if(err){
+        reject("Unable to read file from cache");
+      } else {
+        resolve(parseCachedFile(data));
+      }
+    });
+  });
+}
+
+function parseCachedFile(data){
+
+  console.log("parseCachedFile");
+
+  if(data) {
+    try {
       data = JSON.parse(data);
       data.source = 'disk';
-      return cb(data);
+      return data;
+    } catch (error) {
+      throw "Unable to parse JSON received from server " + error;
     }
-    return cb(null);
-  });
-
-};
-
-function getDataFromServer(cb){
-  request(options, function(error, response, body){
-    if(!error){
-      //body = body.replace("/Date(","").replace(")/","");
-      let data = JSON.parse(body);
-      data.source = 'server';
-      if(data.success){
-        jsonfile.writeFile(filePath,data);
-        cb(data);
-      }
-    }
-  })
-};
-
-function getData (cb) {
-
-  readFromCache((data) => {
-    if(data){
-      cb(data);
-    } else {
-      getDataFromServer((data) => cb(data));
-    }
-  })
+  }
 }
+
+function getDataFromServer(){
+  console.log("getDataFromServer");
+  return new Promise((resolve, reject) => {
+    request(options, (error, response, body) => {
+      if(error) { reject("Error in getDataFromServer: " + error); }
+      try {
+        var data = JSON.parse(body);
+        data.source = 'server';
+        if(data.success){
+            jsonfile.writeFile(filePath,data);            
+            resolve(data);
+        }
+      } 
+      catch(error) {
+        reject("Error loading data from server " + error);
+      }
+    })
+  });
+};
+
 
 module.exports = {
 
-  load : function ( callback ) {
-    getData( data => {
-        callback(null, {
-            source : data.source,
-            arrivals: data.data.arrivals,
-            departures: data.data.departures,
-        });
-    })
+  load : function () {
+      return readFromCache()
+              .then(data => data || getDataFromServer())
+              .then(data => { return {
+                source : data.source,
+                arrivals : data.data.arrivals,
+                departures : data.data.departures
+              }})
+              .catch(e => console.log(e));
   }
 }

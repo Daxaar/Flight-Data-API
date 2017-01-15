@@ -8,23 +8,25 @@ router.get('/', (req, res) => {
 });
 
 router.get('/arrivals',(req, res) => {
-  bhx.load((err, data) => {
-    if(!err) {
+  bhx.load()
+    .then(data => {
       delete data.departures;
       data.arrivals = parse(data.arrivals); 
       res.json(data);
-    }
-  });
+    })
+    .catch(error => res.send("Broken: " + error));
 });
 
 router.get('/departures',(req, res) => {
-  bhx.load((err, data) => {
-    if(!err) {
+
+  bhx.load()
+    .then(data => {
       delete data.arrivals;
       data.departures = parse(data.departures); 
       res.json(data);
-    }
-  });
+    })
+    .catch(error => res.send("Broken: " + error));
+
 });
 
 module.exports = router;
