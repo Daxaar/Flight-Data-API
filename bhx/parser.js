@@ -1,8 +1,17 @@
 const _ = require('lodash');
 
-module.exports = function (data) {
+module.exports = function (data, include) {
     
-    return _.chain(data)
+    if(include === "arrivals") {
+        delete data["departures"];
+    } else if( include === "departures" ) {
+        delete data["arrivals"];
+    } else {
+        throw "Invalid inclusion property passed to parser";
+    }
+    
+    data[include] =
+        _.chain(data[include])
             .map(formatDates)
             .map(removeUnwantedProperties)
             .map(funkyRename)
@@ -10,6 +19,8 @@ module.exports = function (data) {
             .each(merge)
             .map(flightGroup => flightGroup[0])
             .value();
+    
+    return data;
 }
 
 function merge(flights){
@@ -32,11 +43,11 @@ function removeUnwantedProperties(flight){
     return _.omit(flight, ['CssClass','Comments']);
 }
 
-//props in JSON that are recieved in the format "Date/(1234567890)/"
+//Format .NET serialiser Date/(nnn)/ formatted values - Date/(1234567890)/ becomes 1234567890
 function formatDates(flight){
     
     _.forEach(["EstimatedTime","ScheduledTime","RunwayTime"],
-                 time => flight[time] = parseInt(flight[time].match(/\d+/)[0]));
-
+                  time => flight[time] = parseInt(flight[time].match(/\d+/)[0]));
+    
     return flight;
 }

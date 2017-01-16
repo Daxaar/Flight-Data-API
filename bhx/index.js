@@ -2,6 +2,7 @@ var request = require('request');
 var jsonfile = require('jsonfile');
 var fs = require('fs');
 var path = require('path');
+const parse = require('./parser');
 
 var cacheEnabled = false;
 
@@ -66,17 +67,27 @@ function getDataFromServer(){
   });
 };
 
+function load(alwaysUseCache) {
+    return readFromCache(alwaysUseCache)
+            .then(data => data || getDataFromServer())
+            .then(data => { return {
+              source : data.source,
+              arrivals : data.data.arrivals,
+              departures : data.data.departures
+            }})
+            .catch(e => console.log(e));
+}
 
 module.exports = {
 
-  load : function (alwaysUseCache) {
-      return readFromCache(alwaysUseCache)
-              .then(data => data || getDataFromServer())
-              .then(data => { return {
-                source : data.source,
-                arrivals : data.data.arrivals,
-                departures : data.data.departures
-              }})
-              .catch(e => console.log(e));
+  getDepartures: function( alwaysUseCache ) {
+    return load( alwaysUseCache )
+      .then( data => parse(data, "departures" ) );
+  },
+
+  getArrivals : function( alwaysUseCache ) {
+    return load( alwaysUseCache )
+      .then( data => parse( data, "arrivals" ) );
   }
+
 }
