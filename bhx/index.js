@@ -16,9 +16,9 @@ var options = {
 
 var filePath = path.join(process.cwd(),'cache', 'data.json');
 
-function readFromCache (){
+function readFromCache (alwaysUseCache){
 
-  if(!cacheEnabled){
+  if(!cacheEnabled && !alwaysUseCache){
     return Promise.resolve();
   }
 
@@ -35,8 +35,6 @@ function readFromCache (){
 
 function parseCachedFile(data){
 
-  console.log("parseCachedFile");
-
   if(data) {
     try {
       data = JSON.parse(data);
@@ -49,7 +47,7 @@ function parseCachedFile(data){
 }
 
 function getDataFromServer(){
-  console.log("getDataFromServer");
+
   return new Promise((resolve, reject) => {
     request(options, (error, response, body) => {
       if(error) { reject("Error in getDataFromServer: " + error); }
@@ -71,8 +69,8 @@ function getDataFromServer(){
 
 module.exports = {
 
-  load : function () {
-      return readFromCache()
+  load : function (alwaysUseCache) {
+      return readFromCache(alwaysUseCache)
               .then(data => data || getDataFromServer())
               .then(data => { return {
                 source : data.source,

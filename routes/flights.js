@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/arrivals',(req, res) => {
-  bhx.load()
+  bhx.load(toBoolean(req.query.cache))
     .then(data => {
       delete data.departures;
       data.arrivals = parse(data.arrivals); 
@@ -17,9 +17,9 @@ router.get('/arrivals',(req, res) => {
     .catch(error => res.send("Broken: " + error));
 });
 
-router.get('/departures',(req, res) => {
+router.get('/departures?',(req, res) => {
 
-  bhx.load()
+  bhx.load(toBoolean(req.query.cache))
     .then(data => {
       delete data.arrivals;
       data.departures = parse(data.departures); 
@@ -29,4 +29,7 @@ router.get('/departures',(req, res) => {
 
 });
 
+function toBoolean(param){
+  return param == "true" || param == "1";
+}
 module.exports = router;
