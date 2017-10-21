@@ -24,6 +24,12 @@ var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {
 //app.use(logger('short', {stream: accessLogStream}))
 app.use(logger(process.env.LOG_FORMAT || 'dev'));
 
+app.use((req, res, next) => {    
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(bodyParser.json());
@@ -51,12 +57,6 @@ app.use((err, req, res) => {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
-});
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
 });
 
 module.exports = app;
