@@ -15,7 +15,10 @@ var options = {
   }
 };
 
-var filePath = path.join(process.cwd(),'cache', 'data.json');
+const filePath = path.join(process.cwd(),'cache', 'data.json');
+
+const saveFilePath = path.join(process.cwd(), 'store',
+  `${new Date().getTime().toString()}.json`);
 
 function readFromCache (alwaysUseCache){
 
@@ -55,11 +58,12 @@ function getDataFromServer(){
       try {
         var data = JSON.parse(body);
         data.source = 'server';
-        if(data.success){
-            jsonfile.writeFile(filePath,data);            
-            resolve(data);
+        if (data.success) {
+          jsonfile.writeFile(filePath, data);
+          jsonfile.writeFile(saveFilePath, data);
+          resolve(data);
         }
-      } 
+      }
       catch(error) {
         reject("Error loading data from server " + error);
       }
