@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
 module.exports = function (data, include) {
-    
+
     if(include === "arrivals") {
         delete data["departures"];
     } else if( include === "departures" ) {
@@ -9,7 +9,7 @@ module.exports = function (data, include) {
     } else {
         throw "Invalid inclusion property passed to parser";
     }
-    
+
     data[include] =
         _.chain(data[include])
             .map(formatDates)
@@ -19,12 +19,12 @@ module.exports = function (data, include) {
             .each(merge)
             .map(flightGroup => flightGroup[0])
             .value();
-    
+
     return data;
 }
 
 function merge(flights){
-    
+
     const flight = flights[0];
 
     flight.FlightNumber = _.map(flights, flight => flight.FlightNumber);
@@ -40,14 +40,14 @@ function funkyRename(flight){
     return flight;
 }
 function removeUnwantedProperties(flight){
-    return _.omit(flight, ['CssClass','Comments']);
+    return _.omit(flight, ['CssClass','Comments','BizTweetUrl','BizMessengerUrl']);
 }
 
 //Format .NET serialiser Date/(nnn)/ formatted values - Date/(1234567890)/ becomes 1234567890
 function formatDates(flight){
-    
+
     _.forEach(["EstimatedTime","ScheduledTime","RunwayTime"],
                   time => flight[time] = parseInt(flight[time].match(/\d+/)[0]));
-    
+
     return flight;
 }
