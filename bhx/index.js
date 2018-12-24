@@ -16,9 +16,7 @@ var options = {
 };
 
 const filePath = path.join(process.cwd(),'cache', 'data.json');
-
-const saveFilePath = path.join(process.cwd(), 'store',
-  `${new Date().getTime().toString()}.json`);
+const getSaveFilePath = () => path.join(process.cwd(), 'store', `${new Date().getTime().toString()}.json`);
 
 function readFromCache (alwaysUseCache){
 
@@ -60,7 +58,7 @@ function getDataFromServer(){
         data.source = 'server';
         if (data.success) {
           jsonfile.writeFile(filePath, data);
-          jsonfile.writeFile(saveFilePath, data);
+          jsonfile.writeFile(getSaveFilePath(), data);
           resolve(data);
         }
       }
