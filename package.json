@@ -9,7 +9,6 @@
     "debug": "^4.1.1",
     "express": "^4.16.4",
     "form-urlencoded": "^1.5.0",
-    "jade": "~1.9.2",
     "jsonfile": "^2.4.0",
     "lodash": "^4.17.4",
     "morgan": "^1.9.1",
