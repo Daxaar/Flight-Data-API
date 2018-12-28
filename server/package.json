@@ -24,7 +24,8 @@
     "nodemon": "^1.11.0"
   },
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "serve": "npm start"
   },
   "keywords": [],
   "author": "Darren Lewis",

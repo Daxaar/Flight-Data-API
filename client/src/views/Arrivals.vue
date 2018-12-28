@@ -21,7 +21,6 @@ export default {
     };
   },
   computed: {
-    flightNumbers() {}
   },
   async created() {
     this.arrivals = await api.getArrivals();
