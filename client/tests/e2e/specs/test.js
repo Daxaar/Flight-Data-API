@@ -13,3 +13,12 @@ describe('Arrivals', () => {
     cy.contains('h1', 'Arrivals')
   })
 })
+
+
+
+describe('Departures', () => {
+  it('Visits the Departures url', () => {
+    cy.visit('/departures')
+    cy.contains('h1', 'Departures')
+  })
+})
