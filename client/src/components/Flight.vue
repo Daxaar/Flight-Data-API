@@ -20,7 +20,7 @@ export default {
   },
   computed: {
     estimatedTime() {
-      return moment(this.flight.EstimatedTime).format("DD-MM-YYYY");
+      return moment(this.flight.EstimatedTime).format("DD-MM-YYYY HH:mm");
     }
   }
 };

@@ -7,8 +7,8 @@ export default {
         const response = await Axios.get(baseUrl + "arrivals?cache=1");
         return response.data.arrivals;
     },
-    getDepartures() {
-        Axios.get(baseUrl + "departures?cache=1")
-            .then(data => data);
+    async getDepartures() {
+        const response = await Axios.get(baseUrl + "departures?cache=1")
+        return response.data.departures;
     }
 }
