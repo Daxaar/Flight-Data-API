@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
-    <WelcomeMessage msg="Welcome to Flight API"/>
+    <WelcomeMessage msg="Welcome to Flight Data"/>
   </div>
 </template>
 
