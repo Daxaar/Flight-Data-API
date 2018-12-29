@@ -27,7 +27,7 @@ export default new Router({
       // route level code-splitting
       // this generates a separate chunk (departures.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/Departures.vue')
+      component: () => import(/* webpackChunkName: "departures" */ './views/Departures.vue')
     }
   ]
 })
