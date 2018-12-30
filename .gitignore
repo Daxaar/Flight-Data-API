@@ -38,3 +38,4 @@ jspm_packages
 .vscode/
 **/cache/*.json
 store/
+*.local
