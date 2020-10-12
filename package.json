@@ -10,7 +10,7 @@
     "express": "^4.16.4",
     "form-urlencoded": "^1.5.0",
     "jsonfile": "^2.4.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.20",
     "morgan": "^1.9.1",
     "pug": "^2.0.3",
     "request": "^2.79.0",
@@ -21,7 +21,7 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-react": "^6.8.0",
-    "nodemon": "^1.11.0"
+    "nodemon": "^2.0.4"
   },
   "scripts": {
     "start": "nodemon ./bin/www"
